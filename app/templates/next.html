@@ -1,26 +1,29 @@
 {% extends "layout.html" %}
 {% block content %}
+
   <div class = "pull-lt" style="position:fixed;border-style:solid;border:none; border-right:green 10px;">
   		<div class="btn-group-vertical">
 		  <a href="/next/Physics" class="btn btn-raised">Physics</a>
-		  <a href="/next/Mathematics" class="btn btn-raised">Mathematics</a>
 		  <a href="/next/Chemistry" class="btn btn-raised">Chemistry</a>
+		  <a href="/next/Mathematics" class="btn btn-raised">Mathematics</a>
 		</div>
   </div>
   <div style="float:right;width:75%;display:block;">
   {% if data %}
-	  {% for el in data %}
+
+  	  {% for i in question[start:last] %}
 	  		<div class="panel panel-info">
 		  		<div class="panel-heading">
-		    		<h3 class="panel-title">Panel info</h3>
+		    		<h3 class="panel-title">Question {{i}}</h3>
 		  		</div>
 		  		<div class="panel-body">
-		    		{{ el['q'] }}
+		    		<img src = {{ "/static/question/Q%d.JPG"%i }} style="width:80%;height:60%;" 
+		    		class=" img img-responsive" />
 		    		<div class="form-group">
-		    		{% for op in el['o'] %}
+		    		{% for op in options %}
 		    			<div >
 				          <label>{{op}}
-				          <input type="radio" name = "{{el['sno']}}" value = "{{op}}">
+				          	<input type="radio" name = "q" value = "{{op}}">
 				          </label>
         				</div>
 		    		{% endfor %}

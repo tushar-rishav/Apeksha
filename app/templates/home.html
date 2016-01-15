@@ -1,11 +1,20 @@
 {% extends "layout.html" %}
 {% block content %}
+  {% if not msg %}
   <div class="jumbotron">
         <h1>All the best</h1>
         <p class="lead"></p>
         <p><a class="btn btn-lg" style="border:solid thin green;"
         href="{{ url_for('signin') }}" role="button">Start Now</a></p>
+  </div>
+  {% else  %}
+      <div class="alert alert-dismissible alert-success">
+        <button type="button" class="close" data-dismiss="alert">×</button>
+        {% if en %}
+          <strong>Well done!</strong> The test is over now and your response have been recorded. 
+        {% endif %}
       </div>
+  {% endif %}
 
       <div class="bs-component">
           <blockquote>
