@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Apeksha | {{title}}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap-material-design.min.css') }}">
+    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Roboto:300,400,500,700" type="text/css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/ripples.min.css') }}">
+    <link href="http://fezvrasta.github.io/snackbarjs/dist/snackbar.min.css" rel="stylesheet">
+    <link href="http://getbootstrap.com/examples/jumbotron-narrow/jumbotron-narrow.css" rel="stylesheet">
+    <script src="http://code.jquery.com/jquery-1.10.2.min.js"></script>
+  </head>
+
+  <body>
+
+   <div class="container">
+      <div class="header">
+        <nav>
+          <ul class="nav navbar-nav navbar-right">
+            {% if 'email' in session %}
+              <li><a href="{{ url_for('signout') }}">Sign Out</a></li>
+            {% else %}
+              <li role="presentation" class="active"><a href="{{ url_for('home') }}">Home</a></li>
+              <li role="presentation"><a href="{{ url_for('signin') }}">Sign In</a></li>
+            {% endif %}
+          </ul>
+        </nav>
+        <h3 class="text-muted">Apeksha JEE Mock Test</h3>
+      </div>
+
+      {% block content %}{% endblock %}
+
+    <footer class="footer" style="text-align:center !important;">
+        <p>&copy; Apeksha 2015</p>
+        <p>Site developed by <a  href="https://gtihub.com/tushar-rishav"> Tushar Gautam</a></p>
+    </footer>
+    </div> 
+
+    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+    <script src="static/js/ripples.min.js"></script>
+    <script src="static/js/material.min.js"></script>
+
+    <script>
+      $(function () {
+        $.material.init();
+      });
+    </script>
+
+  </body>
+</html>
