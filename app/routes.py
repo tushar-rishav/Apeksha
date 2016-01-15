@@ -21,7 +21,15 @@ def contact():
 
 @App.route('/next')
 def next():
-    return render_template('next.html', title="next")
+    import json
+    return render_template('next.html', title="next", data = None)
+
+@App.route('/next/<subj>')
+def next_subj(subj):
+    import json
+    with open('app/static/question/data.json') as data_file:  
+        data = json.load(data_file)
+    return render_template('next.html', title="next", data = data[subj])
 
 
 @App.route('/signin', methods=['GET', 'POST'])

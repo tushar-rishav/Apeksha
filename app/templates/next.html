@@ -1,7 +1,50 @@
 {% extends "layout.html" %}
 {% block content %}
-  <div class="jumbo">
-    <h2>Profile<h2>
-    <h3>This is {{ session['email'] }}'s profile page<h3>
+  <div class = "pull-lt" style="position:fixed;border-style:solid;border:none; border-right:green 10px;">
+  		<div class="btn-group-vertical">
+		  <a href="/next/Physics" class="btn btn-raised">Physics</a>
+		  <a href="/next/Mathematics" class="btn btn-raised">Mathematics</a>
+		  <a href="/next/Chemistry" class="btn btn-raised">Chemistry</a>
+		</div>
   </div>
+  <div style="float:right;width:75%;display:block;">
+  {% if data %}
+	  {% for el in data %}
+	  		<div class="panel panel-info">
+		  		<div class="panel-heading">
+		    		<h3 class="panel-title">Panel info</h3>
+		  		</div>
+		  		<div class="panel-body">
+		    		{{ el['q'] }}
+		    		<div class="form-group">
+		    		{% for op in el['o'] %}
+		    			<div >
+				          <label>{{op}}
+				          <input type="radio" name = "{{el['sno']}}" value = "{{op}}">
+				          </label>
+        				</div>
+		    		{% endfor %}
+		    		</div>
+		  		</div>
+			</div>
+
+	  {% endfor %}
+  {% else %}
+  		<div class="panel panel-info">
+		  		<div class="panel-heading">
+		    		<h3 class="panel-title">Panel info</h3>
+		  		</div>
+		  		<div class="panel-body">
+		    		Choose subjects from left.
+		  		</div>
+			</div>
+  {% endif %}
+	  
+	 <footer class="footer" style="text-align:center !important;position:absolute;left:40%;">
+        <p>&copy; Apeksha 2015</p>
+        <p>Site developed by <a  href="https://gtihub.com/tushar-rishav"> Tushar Gautam</a></p>
+  	</footer>
+
+  </div>
+   
 {% endblock %}
