@@ -3,22 +3,20 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/signUp.css') }}">
       <div class="jumbotron">
         <h3 class="center"> Almost there! Hurry up!</h3>
-        {% for message in form.Email.errors %}
-          <div class="flash">{{ message }}</div>
-        {% endfor %}
-        {% for message in form.password.errors %}
+        {% for message in form.reg.errors %}
           <div class="flash">{{ message }}</div>
         {% endfor %}
         <form action="{{ url_for('signin') }}" method = post class = "form-horizontal form-signin" >
           {{ form.hidden_tag() }}
           <div class="form-group">
-            {{ form.Email(class_="form-control", placeholder="Email") }}
-          </div>
-          <div class="form-group">
-            {{ form.password(class_="form-control", placeholder="Password") }}
+            {{ form.reg(class_="form-control", placeholder="Registration ID") }}
           </div>
           {{ form.submit(class_="btn") }}
         </form>
       </div>
+      <footer class="footer" style="text-align:center !important;position:absolute;left:40%;">
+        <p>&copy; Apeksha 2015</p>
+        <p>Site developed by <a  href="https://gtihub.com/tushar-rishav"> Tushar Gautam</a></p>
+    </footer>
 {% endblock %}
 

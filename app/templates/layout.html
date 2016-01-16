@@ -11,6 +11,43 @@
     <link href="http://fezvrasta.github.io/snackbarjs/dist/snackbar.min.css" rel="stylesheet">
     <link href="http://getbootstrap.com/examples/jumbotron-narrow/jumbotron-narrow.css" rel="stylesheet">
     <script src="http://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <style>
+      #clockdiv{
+        font-family: sans-serif;
+        color: #fff;
+        display: inline-block;
+        font-weight: 100;
+        text-align: center;
+        font-size: 15px;
+        position: fixed;
+        right:2%;
+        top:25%;
+      }
+      #time{
+        position: fixed;
+        right:2%;
+        top:15%;color:#777;
+      }
+
+      #clockdiv > div{
+        padding: 4px;
+        border-radius: 3px;
+        background: #00BF96;
+        display: inline-block;
+      }
+
+      #clockdiv div > span{
+        padding: 5px;
+        border-radius: 3px;
+        background: #00816A;
+        display: inline-block;
+      }
+
+      .smalltext{
+        padding-top: 5px;
+        font-size: 16px;
+      }
+    </style>
   </head>
 
   <body>
@@ -18,9 +55,32 @@
    <div class="container">
       <div class="header">
         <nav>
-          <ul class="nav navbar-nav navbar-right">
-            {% if 'email' in session %}
+          <ul class="nav navbar-nav navbar-right" style="display:inline;">
+            {% if 'reg' in session %}
               <li><a href="{{ url_for('signout') }}">Sign Out</a></li>
+              <li>
+                <h3 id="time" >Time left</h3>
+                  <div id="clockdiv">
+                    <div>
+                      <span class="hours"></span>
+                      <div class="smalltext">Hours</div>
+                    </div>
+                    <div>
+                      <span class="minutes"></span>
+                      <div class="smalltext">Minutes</div>
+                    </div>
+                    <div>
+                      <span class="seconds"></span>
+                      <div class="smalltext">Seconds</div>
+                    </div>
+                  </div>
+
+
+
+              </li>
+              <li>
+                
+              </li>
             {% else %}
               <li role="presentation" class="active"><a href="{{ url_for('home') }}">Home</a></li>
               <li role="presentation"><a href="{{ url_for('signin') }}">Sign In</a></li>
@@ -35,8 +95,8 @@
     </div> 
 
     <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
-    <script src="static/js/ripples.min.js"></script>
-    <script src="static/js/material.min.js"></script>
+    <script src="/static/js/ripples.min.js"></script>
+    <script src="/static/js/material.min.js"></script>
 
     <script>
       $(function () {

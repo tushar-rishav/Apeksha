@@ -5,10 +5,8 @@ from models import db, User
 
 
 class SigninForm(Form):
-    Email = TextField("Email",  [validators.Required(
-        "Please enter your email address."), validators.Email("Please enter your email address.")])
-    password = PasswordField(
-        'Password', [validators.Required("Please enter a password.")])
+    reg = TextField("Text",  [validators.Required(
+        "Please enter your Registration ID")])
     submit = SubmitField("Sign In")
 
     def __init__(self, *args, **kwargs):
@@ -17,10 +15,9 @@ class SigninForm(Form):
     def validate(self):
         if not Form.validate(self):
             return False
-        user = User.query.filter_by(email=self.Email.data).first()
-        print vars(user)
-        if user and user.check_password(self.password.data):
+        user = User.query.get(self.reg.data)
+        if user:
             return True
         else:
-            self.Email.errors.append("Invalid e-mail or password")
+            self.reg.errors.append("Invalid Registration")
             return False

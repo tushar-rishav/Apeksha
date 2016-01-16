@@ -1,24 +1,38 @@
 from app import App
 from flask import render_template, request, flash, session, url_for, redirect
 from forms import SigninForm
-from models import db, User
 import datetime as dt
-import time
-import threading
-
-
+from models import db, Respon
 class Date(object):
-    end_time = dt.datetime(2016, 1, 17, 0, 58, 0, 0)
+    end_time = dt.datetime(2016, 1, 17, 0, 26, 0, 0)
 
     def __init__(self):
         pass
 track = Date()
 
+subj_questions = {
+    "Physics" : [0,30],
+    "Chemistry": [30,60],
+    "Mathematics":[60,90]
+}
 
 def end():
     global track
     return dt.datetime.now() > track.end_time
 
+def update_response_str(db_resp, form_resp, subject):
+    db_resp = list(db_resp)
+    start,end = subj_questions.get(subject,[0,0])[0], subj_questions.get(subject,[0,0])[1]
+    form_resp = dict(form_resp)
+    for i in xrange(start,end):
+        form_resp[str(i+1)] = form_resp.get(str(i+1),[u'X'])[0]
+    for i in xrange(0,30):
+        try:
+            if form_resp[str(start+i+1)] != 'X':
+                db_resp[i] = form_resp[str(start+i+1)]
+        except Exception as e:
+            print(e)
+    return ''.join(db_resp)
 
 @App.route('/')
 def home():
@@ -38,39 +52,80 @@ def contact():
 @App.route('/next')
 @App.route('/next/<subj>')
 def next(subj=None):
-    import json
-    global track
-    track = Date()
-    if not end():
-        if subj == "Physics":
-            start = 0
-            last = 30
-        elif subj == "Chemistry":
-            start = 30
-            last = 60
+    if 'reg' in session:
+        import json
+        global track
+        track = Date()
+        if not end():
+            response = Respon.query.filter_by(reg_id=session['reg']).first()
+            if not response:
+                db.session.add(Respon(session['reg'], "X"*30, "X"*30, "X"*30))
+                db.session.commit()
+                response = Respon.query.filter_by(reg_id=session['reg']).first()
+            temp = {
+                "Physics":response.Physics,
+                "Chemistry":response.Chemistry,
+                "Mathematics":response.Mathematics
+            }
+            return render_template('next.html', question=range(1, 91), options=['A', 'B', 'C', 'D'],
+                                    title=subj if subj else None, start=subj_questions.get(subj,[0,0])[0],
+                                    last=subj_questions.get(subj,[0,0])[1], attempts = temp.get(subj,"X"*30) if subj else "X"*30 )
         else:
-            start = 60
-            last = 90
-        return render_template('next.html', title="next",
-                               question=range(1, 91), options=['A', 'B', 'C', 'D'], data=subj if subj else None, start=start, last=last)
+            return render_template('home.html', title="Contest ended", msg="Contest ended", en=True)
     else:
-        return render_template('home.html', title="Contest ended", msg="Contest ended", en=True)
+        return redirect(url_for('signin'))
+
+@App.route('/next/<subj>/save',methods=['POST'])
+def save(**args):
+    resp_str = ""
+    if 'reg' not in session:
+        return redirect(url_for('signin'))
+    if request.method == 'POST':
+        subj = str(request.form['subject'])
+        response = Respon.query.filter_by(reg_id=session['reg']).first()
+        
+        if not response:
+            db.session.add(Respon(session['reg'], "X"*30, "X"*30, "X"*30))
+            db.session.commit()
+            response = Respon.query.filter_by(reg_id=session['reg']).first()
+        
+        
+        if subj == "Physics":
+            resp_str =  str(response.Physics)
+            resp_str = update_response_str(resp_str, request.form, subj)
+            response.Physics = resp_str
+
+        elif subj == "Chemistry":
+            resp_str =  str(response.Chemistry)
+            resp_str = update_response_str(resp_str, request.form, subj)
+            response.Chemistry = resp_str
+
+        else:
+            resp_str =  str(response.Mathematics)
+            resp_str = update_response_str(resp_str, request.form, subj)
+            response.Mathematics = resp_str
+        db.session.commit()
+
+    return render_template('next.html', question=range(1, 91), options=['A', 'B', 'C', 'D'],
+                            title=subj if subj else None, start=subj_questions.get(subj,[0,0])[0],
+                            last=subj_questions.get(subj,[0,0])[1], attempts = resp_str)
 
 
+    
 @App.route('/signin', methods=['GET', 'POST'])
 def signin():
     if end():
         return render_template('home.html', title="Contest ended", msg="Contest ended", en=True)
 
     form = SigninForm()
-    if 'email' in session:
+    if 'reg' in session:
         return redirect(url_for('next'))
 
     if request.method == 'POST':
         if form.validate() == False:
             return render_template('signin.html', form=form, title="signin")
         else:
-            session['email'] = form.Email.data
+            session['reg'] = form.reg.data
             return redirect(url_for('next'))
 
     elif request.method == 'GET':
@@ -79,8 +134,8 @@ def signin():
 
 @App.route('/signout')
 def signout():
-    if 'email' not in session:
+    if 'reg' not in session:
         return redirect(url_for('signin'))
 
-    session.pop('email', None)
+    session.pop('reg', None)
     return redirect(url_for('home'))

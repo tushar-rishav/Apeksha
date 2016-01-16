@@ -1,37 +1,59 @@
 {% extends "layout.html" %}
 {% block content %}
+<div style="display:none;position:fixed;top:10%;left:40%;" id ="resp_msg_s" class="alert alert-dismissible alert-success">
+	<button type="button" class="close" data-dismiss="alert">×</button>
+	<strong>Well done!</strong> Response saved Successfully!
+</div>
+
+<div style="display:none;position:fixed;top:10%;left:40%;" id ="resp_msg_e" class="alert alert-dismissible alert-danger">
+	<button type="button" class="close" data-dismiss="alert">×</button>
+	<strong>Oops!</strong> Something went wrong!
+</div>
 
   <div class = "pull-lt" style="position:fixed;border-style:solid;border:none; border-right:green 10px;">
   		<div class="btn-group-vertical">
 		  <a href="/next/Physics" class="btn btn-raised">Physics</a>
-		  <a href="/next/Chemistry" class="btn btn-raised">Chemistry</a>
 		  <a href="/next/Mathematics" class="btn btn-raised">Mathematics</a>
+		  <a href="/next/Chemistry" class="btn btn-raised">Chemistry</a>
 		</div>
   </div>
   <div style="float:right;width:75%;display:block;">
-  {% if data %}
-
+  {% if title %}
+  	<form  class = "form-horizontal form-signin" enctype="multipart/form-data" >
   	  {% for i in question[start:last] %}
 	  		<div class="panel panel-info">
 		  		<div class="panel-heading">
 		    		<h3 class="panel-title">Question {{i}}</h3>
 		  		</div>
 		  		<div class="panel-body">
-		    		<img src = {{ "/static/question/Q%d.JPG"%i }} style="width:80%;height:60%;" 
-		    		class=" img img-responsive" />
-		    		<div class="form-group">
+		    		<img src = {{ "/static/question/Q%d.JPG"%i }} style="width:80%;height:60%;"  class=" img img-responsive" />
+		    		<div class="form-group" style="text-align:center;">
 		    		{% for op in options %}
-		    			<div >
-				          <label>{{op}}
-				          	<input type="radio" name = "q" value = "{{op}}">
-				          </label>
+		    			<div  class="radio radio-primary" style="display:inline; padding:5%;" >
+				          {{op}}
+				          {% if attempts[i-start-1] == op %}
+					          <label>
+					          	<input type="radio" name = "{{i}}" checked="true" value = "{{op}}" >
+					          </label>
+				          {% else %}
+				          	<label>
+					          	<input type="radio" name = "{{i}}" value = "{{op}}" >
+					        </label>
+					        
+        				 {% endif %}
         				</div>
 		    		{% endfor %}
 		    		</div>
+
 		  		</div>
 			</div>
-
 	  {% endfor %}
+	  <input type="hidden" name = "subject" value = "{{title}}">
+    </form>
+
+	  <button id="save" class= "btn" style="position: fixed;
+        right:2%;
+        top:3%; border:solid green thin;" >Save</button>/>
   {% else %}
   		<div class="panel panel-info">
 		  		<div class="panel-heading">
@@ -49,5 +71,85 @@
   	</footer>
 
   </div>
-   
+   <script>
+   		
+   		$(function() {
+		    $('#save').click(function() {
+		 		subj = location.href.split('?')[0].split("/")
+		        $.ajax({
+		            url: subj[subj.length-1]+'/save',
+		            data: $('form').serialize(),
+		            type: "POST",
+		            success: function(response) {
+		                $("#resp_msg_s").show();
+		            },
+		            error: function(error) {
+		                $("#resp_msg_e").show();
+		                console.log(error);
+		            }
+
+		        });
+		        console.log($('form').serialize());
+		    });
+		});
+   		function getTimeRemaining(endtime) {
+		  var t = Date.parse(endtime) - Date.parse(new Date());
+		  var seconds = Math.floor((t / 1000) % 60);
+		  var minutes = Math.floor((t / 1000 / 60) % 60);
+		  var hours = Math.floor((t / (1000 * 60 * 60)) % 24);
+		  return {
+		    'total': t,
+		    'hours': hours,
+		    'minutes': minutes,
+		    'seconds': seconds
+		  };
+		}
+
+		function initializeClock(id, endtime) {
+		  var clock = document.getElementById(id);
+		  var hoursSpan = clock.querySelector('.hours');
+		  var minutesSpan = clock.querySelector('.minutes');
+		  var secondsSpan = clock.querySelector('.seconds');
+
+		  function updateClock() {
+		    var t = getTimeRemaining(endtime);
+
+		    hoursSpan.innerHTML = ('0' + t.hours).slice(-2);
+		    minutesSpan.innerHTML = ('0' + t.minutes).slice(-2);
+		    secondsSpan.innerHTML = ('0' + t.seconds).slice(-2);
+
+		    if (t.total <= 0) {
+		      clearInterval(timeinterval);
+		      /* Time to save and Die */
+		      $.ajax({
+		            url: subj[subj.length-1]+'/save',
+		            data: $('form').serialize(),
+		            type: "POST",
+		            success: function(response) {
+		                $("#resp_msg_s").show();
+		                $(location).attr('href','/signout');
+		            },
+		            error: function(error) {
+		                $("#resp_msg_e").show();
+		                console.log(error);
+		            }
+
+		        });
+
+		    }
+		  }
+
+		  updateClock();		// compensate for 1 second time loss
+		  var timeinterval = setInterval(updateClock, 1000);
+		}
+		if(document.cookie && document.cookie.match('JEETimer')){
+		  deadline = document.cookie.match(/(^|;)JEETimer=([^;]+)/)[2];
+		}else{
+		  var timeInMinutes = 10;
+		  var currentTime = Date.parse(new Date());
+		  deadline = 'January 17 2016 00:26:00 GMT+05:30';		// change DEADLINE accordingly
+		  document.cookie = 'JEETimer=' + deadline + '; path=/; domain=.127.0.0.1';
+		}
+		initializeClock('clockdiv', deadline);
+   </script>
 {% endblock %}
