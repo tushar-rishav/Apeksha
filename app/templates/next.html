@@ -27,17 +27,19 @@
 		  		</div>
 		  		<div class="panel-body">
 		    		<img src = {{ "/static/question/Q%d.JPG"%i }} style="width:80%;height:60%;"  class=" img img-responsive" />
+		    		
 		    		<div class="form-group" style="text-align:center;">
 		    		{% for op in options %}
-		    			<div  class="radio radio-primary" style="display:inline; padding:5%;" >
+		    		        
+		                <div class="checkbox" style="display:inline; padding:5%;" >
 				          {{op}}
 				          {% if attempts[i-start-1] == op %}
 					          <label>
-					          	<input type="radio" name = "{{i}}" checked="true" value = "{{op}}" >
+					          	<input  type="checkbox" id = "q{{i}}{{op}}"  name = "{{i}}" checked="true" value = "{{op}}" >
 					          </label>
 				          {% else %}
 				          	<label>
-					          	<input type="radio" name = "{{i}}" value = "{{op}}" >
+					          	<input type="checkbox" id = "q{{i}}{{op}}" name = "{{i}}" value = "{{op}}" >
 					        </label>
 					        
         				 {% endif %}
@@ -147,7 +149,7 @@
 		}else{
 		  var timeInMinutes = 10;
 		  var currentTime = Date.parse(new Date());
-		  deadline = 'January 17 2016 00:26:00 GMT+05:30';		// change DEADLINE accordingly
+		  deadline = 'January 17 2016 13:32:00 GMT+05:30';		// change DEADLINE accordingly
 		  document.cookie = 'JEETimer=' + deadline + '; path=/; domain=.127.0.0.1';
 		}
 		initializeClock('clockdiv', deadline);

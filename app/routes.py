@@ -4,7 +4,7 @@ from forms import SigninForm
 import datetime as dt
 from models import db, Respon
 class Date(object):
-    end_time = dt.datetime(2016, 1, 17, 0, 26, 0, 0)
+    end_time = dt.datetime(2016, 1, 17, 13, 32, 0, 0)
 
     def __init__(self):
         pass
@@ -27,11 +27,11 @@ def update_response_str(db_resp, form_resp, subject):
     for i in xrange(start,end):
         form_resp[str(i+1)] = form_resp.get(str(i+1),[u'X'])[0]
     for i in xrange(0,30):
-        try:
-            if form_resp[str(start+i+1)] != 'X':
-                db_resp[i] = form_resp[str(start+i+1)]
-        except Exception as e:
-            print(e)
+        # try:
+        #     if form_resp[str(start+i+1)] != 'X':
+        db_resp[i] = form_resp[str(start+i+1)]
+        # except Exception as e:
+        #     print(e)
     return ''.join(db_resp)
 
 @App.route('/')
@@ -56,6 +56,7 @@ def next(subj=None):
         import json
         global track
         track = Date()
+        #print "END ",end()
         if not end():
             response = Respon.query.filter_by(reg_id=session['reg']).first()
             if not response:
