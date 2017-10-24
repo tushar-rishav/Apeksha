@@ -6,10 +6,10 @@
         {% for message in form.reg.errors %}
           <div class="flash">{{ message }}</div>
         {% endfor %}
-        <form action="{{ url_for('signin') }}" method = post class = "form-horizontal form-signin" >
+        <form action="{{ url_for('signin') }}" method = post >
           {{ form.hidden_tag() }}
-          <div class="form-group">
-            {{ form.reg(class_="form-control", placeholder="Registration ID") }}
+          <div>
+            {{ form.reg(placeholder="Registration ID") }}
           </div>
           {{ form.submit(class_="btn") }}
         </form>

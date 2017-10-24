@@ -1,2 +1,3 @@
-Flask == 0.10.1.egg
-WTForms == 2.1
+Flask == 0.10.1f
+Flask-WTF
+Flask-SQLAlchemy

@@ -4,7 +4,7 @@ from forms import SigninForm
 import datetime as dt
 from models import db, Respon
 class Date(object):
-    end_time = dt.datetime(2016, 1, 17, 13, 32, 0, 0)
+    end_time = dt.datetime(2017, 10, 25, 17, 32, 0, 0)
 
     def __init__(self):
         pass
@@ -118,12 +118,16 @@ def signin():
     if end():
         return render_template('home.html', title="Contest ended", msg="Contest ended", en=True)
 
-    form = SigninForm()
+    form = SigninForm(request.form)
+
+    print "FORM", form.__dict__
+    print "SESSION", session.__dict__
+
     if 'reg' in session:
         return redirect(url_for('next'))
 
     if request.method == 'POST':
-        if form.validate() == False:
+        if form.validate_form() == False:
             return render_template('signin.html', form=form, title="signin")
         else:
             session['reg'] = form.reg.data
